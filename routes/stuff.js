@@ -5,6 +5,7 @@ const stuffCtrl = require('../controllers/stuff');
 const auth = require ('../middleware/auth');
 const multer = require ('../middleware/multer-config');
 
+//ROUTE DES SAUCES 
 router.post('/', auth, multer, stuffCtrl.createThing);
 router.put('/:id',auth, multer,  stuffCtrl.modifyThing);
 router.delete('/:id', auth, stuffCtrl.deleteThing);

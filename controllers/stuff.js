@@ -2,12 +2,9 @@ const Thing = require('../models/Thing');
 const fs = require ('fs');
 const Like = require('../models/Like');
 
+//AJOUT D UNE SAUCE
 exports.createThing = (req, res, next) => {
   const thingObject = JSON.parse(req.body.sauce);
-  console.log("affichage du req.body");
-  console.log(req.body);
-  console.log("affichage du req.body.sauce");
-  console.log(req.body.sauce);
   delete thingObject._id;
   const thing = new Thing({
     name: thingObject.name,
@@ -22,34 +19,28 @@ exports.createThing = (req, res, next) => {
     userId: thingObject.userId,
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   });
-  console.log("affichage de thing");
-  console.log(thing);
+  //SAUVEGARDE  DE LA CREATION DE SAUCE EN BDD
   thing.save().then(
     () => {
       res.status(201).json({
-        message: 'Post saved successfully!'
+        message: 'Sauce ajouté'
       });
     }
   ).catch(
     (error) => {
-      console.log(error);
       res.status(400).json({
         error: error
       });
     }
   );
 };
-console.log("test2");
+
+//AFFICHAGE D UNE SAUCE
 exports.getOneThing = (req, res, next) => {
-  Thing.findOne({
-    _id: req.params.id
-  }).then(
+  Thing.findOne({_id: req.params.id})
+  .then(
     (thing) => {
-      console.log("recherche thing1");
-      console.log(thing);
       res.status(200).json(thing);
-      console.log("reponse");
-      console.log(thing);
     }
   ).catch(
     (error) => {
@@ -60,6 +51,7 @@ exports.getOneThing = (req, res, next) => {
   );
 };
 
+//MODIFICATION D UNE SAUCE
 exports.modifyThing = (req, res, next) => {
   const thingObject = req.file ?
     {
@@ -71,6 +63,7 @@ exports.modifyThing = (req, res, next) => {
     .catch(error => res.status(400).json({ error }));
 };
 
+//SUPPRIMER UNE SAUCE
 exports.deleteThing = (req, res, next) => {
   Thing.findOne({ _id: req.params.id })
     .then(thing => {
@@ -84,6 +77,7 @@ exports.deleteThing = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));
 };
 
+// RECUPERATION DES SAUCE DISPONIBLE EN BDD
 exports.getAllStuff = (req, res, next) => {
   Thing.find().then(
     (things) => {
@@ -97,6 +91,7 @@ exports.getAllStuff = (req, res, next) => {
     }
   );
 };
+
 //GESTION DES LIKES 
 exports.createLike = (req, res, next) => {
   Thing.findOne({ _id: req.params.id })

@@ -7,13 +7,13 @@ const path = require('path');
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/User');
 const Thing = require ('./models/Thing');
-
+// GESTION DE MONGOOSE
 mongoose.connect('mongodb+srv://leslo:kilkil18@clusterp6.hhllp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
-
+// GESTION REQUETE ET CORS
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -23,7 +23,6 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
-console.log("toto");
 app.use('/api/sauces', stuffRoutes);
 app.use('/api/auth', userRoutes);
 
