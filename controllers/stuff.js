@@ -1,18 +1,29 @@
 const Thing = require('../models/Thing');
 const fs = require ('fs');
-console.log("test");
+const Like = require('../models/Like');
 
 exports.createThing = (req, res, next) => {
-  console.log("test3");
-  console.log(req);
   const thingObject = JSON.parse(req.body.sauce);
-  console.log("thing");
-  console.log(thingObject);
+  console.log("affichage du req.body");
+  console.log(req.body);
+  console.log("affichage du req.body.sauce");
+  console.log(req.body.sauce);
   delete thingObject._id;
   const thing = new Thing({
-    ...thingObject,
-     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    name: thingObject.name,
+    manufacturer: thingObject.manufacturer,
+    description: thingObject.description,
+    mainPepper: thingObject.mainPepper,
+    heat: thingObject.heat,
+    likes: 0,
+    dislikes: 0,
+    usersLiked:[],
+    usersDisliked: [],
+    userId: thingObject.userId,
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   });
+  console.log("affichage de thing");
+  console.log(thing);
   thing.save().then(
     () => {
       res.status(201).json({
@@ -21,6 +32,7 @@ exports.createThing = (req, res, next) => {
     }
   ).catch(
     (error) => {
+      console.log(error);
       res.status(400).json({
         error: error
       });
@@ -33,7 +45,11 @@ exports.getOneThing = (req, res, next) => {
     _id: req.params.id
   }).then(
     (thing) => {
+      console.log("recherche thing1");
+      console.log(thing);
       res.status(200).json(thing);
+      console.log("reponse");
+      console.log(thing);
     }
   ).catch(
     (error) => {
@@ -81,3 +97,44 @@ exports.getAllStuff = (req, res, next) => {
     }
   );
 };
+//GESTION DES LIKES 
+exports.createLike = (req, res, next) => {
+  Thing.findOne({ _id: req.params.id })
+      .then(sauce => {
+          const futurModifBdd = {
+              usersLiked: sauce.usersLiked,
+              usersDisliked: sauce.usersDisliked,
+              likes: 0,
+              dislikes: 0
+          }
+          // GESTION DES TABLEAUX USERSLIKE DISLIKE
+          switch (req.body.like) {
+              case 1:
+              futurModifBdd.usersLiked.push(req.body.userId);
+                  break;
+              case -1:  
+              futurModifBdd.usersDisliked.push(req.body.userId);
+                  break;
+              case 0:  
+                  if (futurModifBdd.usersLiked.includes(req.body.userId)) {
+                      
+                      const index = futurModifBdd.usersLiked.indexOf(req.body.userId);
+                      futurModifBdd.usersLiked.splice(index, 1);
+                  } else {
+                      
+                      const index = futurModifBdd.usersDisliked.indexOf(req.body.userId);
+                      futurModifBdd.usersDisliked.splice(index, 1);
+                  }
+                  break;
+          };
+          // GESTION DU NOMBRE DE LIKE
+          futurModifBdd.likes = futurModifBdd.usersLiked.length;
+          futurModifBdd.dislikes = futurModifBdd.usersDisliked.length;
+          // UPDATE
+          Thing.updateOne({ _id: req.params.id }, futurModifBdd )
+              .then(() => res.status(200).json({ message: 'avis enregistré'}))
+              .catch(error => res.status(400).json({ error }))  
+      })
+      .catch(error => res.status(500).json({ error }));
+}
+

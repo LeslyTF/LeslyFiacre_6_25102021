@@ -6,10 +6,10 @@ const thingSchema = mongoose.Schema({
   description: { type: String, required: true },
   mainPepper: {type: String, required: true},
   heat: {type: Number, required: true},
-  /*likes: {type: Number},
+  likes: {type: Number},
   dislikes: {type: Number},
-  usersLiked:{ type: String},
-  usersDisliked: { type: String},*/
+  usersLiked:{ type: Array},
+  usersDisliked: { type: Array},
   imageUrl: { type: String},
   userId: { type: String, required: true },
 });
