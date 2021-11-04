@@ -1,6 +1,5 @@
 const Thing = require('../models/Thing');
 const fs = require ('fs');
-const Like = require('../models/Like');
 
 //AJOUT D UNE SAUCE
 exports.createThing = (req, res, next) => {
@@ -53,6 +52,7 @@ exports.getOneThing = (req, res, next) => {
 
 //MODIFICATION D UNE SAUCE
 exports.modifyThing = (req, res, next) => {
+  if (req.body.userIdAddedByAuth == thing.userId){
   const thingObject = req.file ?
     {
       ...JSON.parse(req.body.thing),
@@ -61,18 +61,27 @@ exports.modifyThing = (req, res, next) => {
   Thing.updateOne({ _id: req.params.id }, { ...thingObject, _id: req.params.id })
     .then(() => res.status(200).json({ message: 'Objet modifié !'}))
     .catch(error => res.status(400).json({ error }));
+  }
+  else{
+    res.status(403).json({message : "Vous n'avez pas le droit de modifier la sauce"});
+  }
 };
 
 //SUPPRIMER UNE SAUCE
 exports.deleteThing = (req, res, next) => {
-  Thing.findOne({ _id: req.params.id })
+  Thing.findOne({ _id: req.params.id})
     .then(thing => {
-      const filename = thing.imageUrl.split('/images/')[1];
-      fs.unlink(`images/${filename}`, () => {
+      if(req.body.userIdAddedByAuth == thing.userId){
+        const filename = thing.imageUrl.split('/images/')[1];
+        fs.unlink(`images/${filename}`, () => {
         Thing.deleteOne({ _id: req.params.id })
           .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
           .catch(error => res.status(400).json({ error }));
       });
+      }
+      else{
+        res.status(403).json({message : "vous n'avez pas le droit de supprimer la sauce"});
+      }
     })
     .catch(error => res.status(500).json({ error }));
 };
