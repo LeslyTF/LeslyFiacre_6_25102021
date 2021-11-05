@@ -1,4 +1,4 @@
 node_modules/
 images/
-models/Like.js
-imgexemple/
+.DS_Store
+package-lock.json
