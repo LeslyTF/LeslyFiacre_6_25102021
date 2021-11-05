@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // GESTION DE LA CONFIGURATION DES SAUCES
-const thingSchema = mongoose.Schema({
+const sauceSchema = mongoose.Schema({
   name: { type: String, required: true },
   manufacturer: {type: String, required: true},
   description: { type: String, required: true },
@@ -15,4 +15,4 @@ const thingSchema = mongoose.Schema({
   userId: { type: String, required: true }, 
 });
 
-module.exports = mongoose.model('Thing', thingSchema);
+module.exports = mongoose.model('Sauce', sauceSchema);

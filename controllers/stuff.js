@@ -1,11 +1,11 @@
-const Thing = require('../models/Thing');
+const Sauce = require('../models/Thing');
 const fs = require ('fs');
 
 //AJOUT D UNE SAUCE
 exports.createThing = (req, res, next) => {
   const thingObject = JSON.parse(req.body.sauce);
   delete thingObject._id;
-  const thing = new Thing({
+  const sauce = new Sauce({
     name: thingObject.name,
     manufacturer: thingObject.manufacturer,
     description: thingObject.description,
@@ -19,7 +19,7 @@ exports.createThing = (req, res, next) => {
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   });
   //SAUVEGARDE  DE LA CREATION DE SAUCE EN BDD
-  thing.save().then(
+  sauce.save().then(
     () => {
       res.status(201).json({
         message: 'Sauce ajouté'
@@ -36,10 +36,10 @@ exports.createThing = (req, res, next) => {
 
 //AFFICHAGE D UNE SAUCE
 exports.getOneThing = (req, res, next) => {
-  Thing.findOne({_id: req.params.id})
+  Sauce.findOne({_id: req.params.id})
   .then(
-    (thing) => {
-      res.status(200).json(thing);
+    (sauce) => {
+      res.status(200).json(sauce);
     }
   ).catch(
     (error) => {
@@ -52,30 +52,40 @@ exports.getOneThing = (req, res, next) => {
 
 //MODIFICATION D UNE SAUCE
 exports.modifyThing = (req, res, next) => {
-  if (req.body.userIdAddedByAuth == thing.userId){
-  const thingObject = req.file ?
+
+  Sauce.findOne({_id: req.params.id})
+  
+  .then(sauce => {
+    if(req.body.userIdAddedByAuth == sauce.userId){
+      console.log("testid");
+      console.log(req.body.userIdAddedByAuth);
+      console.log(sauce.userId);
+    const thingObject = req.file ?
     {
-      ...JSON.parse(req.body.thing),
+      ...JSON.parse(req.body.sauce),
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
-  Thing.updateOne({ _id: req.params.id }, { ...thingObject, _id: req.params.id })
-    .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+
+    Sauce.updateOne({ _id: req.params.id }, { ...thingObject, _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Sauce modifiée !'}))
     .catch(error => res.status(400).json({ error }));
-  }
-  else{
-    res.status(403).json({message : "Vous n'avez pas le droit de modifier la sauce"});
-  }
+    }
+    else{
+      res.status(403).json({message : "vous n'avez pas le droit de modifier la sauce"});
+    }
+  })
+  .catch(error => res.status(500).json({ error }));
 };
 
 //SUPPRIMER UNE SAUCE
 exports.deleteThing = (req, res, next) => {
-  Thing.findOne({ _id: req.params.id})
-    .then(thing => {
-      if(req.body.userIdAddedByAuth == thing.userId){
-        const filename = thing.imageUrl.split('/images/')[1];
+  Sauce.findOne({ _id: req.params.id})
+    .then(sauce => {
+      if(req.body.userIdAddedByAuth == sauce.userId){
+        const filename = sauce.imageUrl.split('/images/')[1];
         fs.unlink(`images/${filename}`, () => {
-        Thing.deleteOne({ _id: req.params.id })
-          .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+        Sauce.deleteOne({ _id: req.params.id })
+          .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))
           .catch(error => res.status(400).json({ error }));
       });
       }
@@ -88,9 +98,9 @@ exports.deleteThing = (req, res, next) => {
 
 // RECUPERATION DES SAUCE DISPONIBLE EN BDD
 exports.getAllStuff = (req, res, next) => {
-  Thing.find().then(
-    (things) => {
-      res.status(200).json(things);
+  Sauce.find().then(
+    (sauces) => {
+      res.status(200).json(sauces);
     }
   ).catch(
     (error) => {
@@ -103,7 +113,7 @@ exports.getAllStuff = (req, res, next) => {
 
 //GESTION DES LIKES 
 exports.createLike = (req, res, next) => {
-  Thing.findOne({ _id: req.params.id })
+  Sauce.findOne({ _id: req.params.id })
       .then(sauce => {
           const futurModifBdd = {
               usersLiked: sauce.usersLiked,
@@ -135,7 +145,7 @@ exports.createLike = (req, res, next) => {
           futurModifBdd.likes = futurModifBdd.usersLiked.length;
           futurModifBdd.dislikes = futurModifBdd.usersDisliked.length;
           // UPDATE
-          Thing.updateOne({ _id: req.params.id }, futurModifBdd )
+          Sauce.updateOne({ _id: req.params.id }, futurModifBdd )
               .then(() => res.status(200).json({ message: 'avis enregistré'}))
               .catch(error => res.status(400).json({ error }))  
       })

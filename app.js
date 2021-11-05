@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/User');
-const Thing = require ('./models/Thing');
+const Sauce = require ('./models/Thing');
 // GESTION DE MONGOOSE
 mongoose.connect('mongodb+srv://leslo:kilkil18@clusterp6.hhllp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
