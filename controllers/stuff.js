@@ -52,15 +52,14 @@ exports.getOneThing = (req, res, next) => {
 
 //MODIFICATION D UNE SAUCE
 exports.modifyThing = (req, res, next) => {
-
   Sauce.findOne({_id: req.params.id})
-  
   .then(sauce => {
-    if(req.body.userIdAddedByAuth == sauce.userId){
+    if(req.userIdAddedByAuth === sauce.userId){
+      // retrait des consolelog quand jaurais reglé le soucis
       console.log("testid");
       console.log(req.body.userIdAddedByAuth);
       console.log(sauce.userId);
-    const thingObject = req.file ?
+      const thingObject = req.file ?
     {
       ...JSON.parse(req.body.sauce),
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
@@ -80,7 +79,7 @@ exports.modifyThing = (req, res, next) => {
 exports.deleteThing = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id})
     .then(sauce => {
-      if(req.body.userIdAddedByAuth == sauce.userId){
+      if(req.userIdAddedByAuth === sauce.userId){
         const filename = sauce.imageUrl.split('/images/')[1];
         fs.unlink(`images/${filename}`, () => {
         Sauce.deleteOne({ _id: req.params.id })

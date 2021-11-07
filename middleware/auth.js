@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
+  console.log(req);
   try {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.verify(token, '>FKTU4*?pGN,K]h');
@@ -8,7 +9,8 @@ module.exports = (req, res, next) => {
     if (req.body.userId && req.body.userId !== userId) {
       throw 'Invalid user ID';
     } else {
-      req.body.userIdAddedByAuth = userId
+      req.userIdAddedByAuth = userId
+      
       next();
     }
   } catch {
