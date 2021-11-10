@@ -1,4 +1,4 @@
 node_modules/
 images/
-.DS_Store
+models/.DS_Store
 package-lock.json
