@@ -1,14 +1,17 @@
 const express = require('express');
 const app = express();
 
+require('dotenv').config();
+console.log(process.env.DB_MDP);
 const bodyParser= require ('body-Parser');
 const mongoose = require('mongoose');
 const path = require('path');
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/User');
 const Sauce = require ('./models/Thing');
+
 // GESTION DE MONGOOSE
-mongoose.connect('mongodb+srv://leslo:kilkil18@clusterp6.hhllp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://'+process.env.DB_NAME+':'+process.env.DB_MDP+'@clusterp6.hhllp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))

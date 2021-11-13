@@ -32,7 +32,7 @@ exports.login = (req, res, next) => {
             userId: user._id,
             token: jwt.sign(
               { userId: user._id },
-              '>FKTU4*?pGN,K]h',
+              process.env.DB_CLEENCODAGE,
               { expiresIn: '24h' }
             )
           });

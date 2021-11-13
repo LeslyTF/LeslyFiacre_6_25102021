@@ -55,10 +55,6 @@ exports.modifyThing = (req, res, next) => {
   Sauce.findOne({_id: req.params.id})
   .then(sauce => {
     if(req.userIdAddedByAuth === sauce.userId){
-      // retrait des consolelog quand jaurais reglé le soucis
-      console.log("testid");
-      console.log(req.body.userIdAddedByAuth);
-      console.log(sauce.userId);
       const thingObject = req.file ?
     {
       ...JSON.parse(req.body.sauce),
