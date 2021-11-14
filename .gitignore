@@ -1,7 +1,7 @@
 node_modules/
 images/
-*.env
-*.DS_Store
+.env
+.DS_Store
 package-lock.json
 package.json
 

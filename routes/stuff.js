@@ -14,3 +14,4 @@ router.get('/', auth, stuffCtrl.getAllStuff);
 router.post('/:id/like', auth, stuffCtrl.createLike);
 
 module.exports = router;
+

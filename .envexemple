@@ -1,0 +1,7 @@
+# identifiant mongoDB
+DB_NAME='nom mongodb'
+DB_MDP='mdp mongodb'
+DB_CLEENCODAGE='clé token mongodb
+
+# cle cryptojs
+CRYPTOJS_KEY='cle cryptojs'
